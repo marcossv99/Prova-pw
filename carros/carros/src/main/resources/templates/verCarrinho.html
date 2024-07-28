@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Carrinho</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <header>
+        <!-- Cabeçalho -->
+    </header>
+    <main class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Itens no Carrinho</h1>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Descrição</th>
+                            <th>Preço</th>
+                            <th>Marca</th>
+                            <th>Imagem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="carro : ${session.carrinho}">
+                            <td th:text="${carro.id}"></td>
+                            <td th:text="${carro.nome}"></td>
+                            <td th:text="${carro.descricao}"></td>
+                            <td th:text="${carro.preco}"></td>
+                            <td th:text="${carro.marca}"></td>
+                            <td><img th:src="@{${carro.imagemUri}}" alt="Imagem do carro" style="width: 100px; height: auto;"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <a href="/finalizarCompra" class="btn btn-success">Finalizar Compra</a>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <!-- Rodapé -->
+    </footer>
+</body>
+</html>

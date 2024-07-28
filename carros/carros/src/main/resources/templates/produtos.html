@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Produtos</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="produtos.css">
+
+    <style>
+        .card {
+            width: 18rem;
+            margin: 10px;
+        }
+        .card img {
+            height: 150px;
+            object-fit: cover;
+        }
+        .card-deck {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .category-menu {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Carros</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/verCarrinho}">Carrinho (<span id="cart-count" th:text="${quantidadeItensCarrinho}">0</span>)</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="category-menu">
+            <h4>Categorias</h4>
+            <ul class="list-group">
+                <li class="list-group-item" th:each="categoria : ${categorias}">
+                    <a th:href="@{'/produtos?categoria=' + ${categoria}}" th:text="${categoria}"></a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card-deck">
+            <div class="card" th:each="carro : ${produtos}">
+                <img class="card-img-top" th:src="@{${carro.imagemUri}}" alt="Imagem do carro">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${carro.nome}"></h5>
+                    <p class="card-text" th:text="${carro.modelo}"></p>
+                    <p class="card-text" th:text="${carro.ano}"></p>
+                    <p class="card-text" th:text="${carro.preco}"></p>
+                    <a th:href="@{'/verProduto?id=' + ${carro.id}}" class="btn btn-primary">Ver Produto</a>
+                    <button class="btn btn-success" th:onclick="'adicionarCarrinho(' + ${carro.id} + ')'">Adicionar ao Carrinho</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function adicionarCarrinho(carroId) {
+            fetch('/adicionarCarrinho?id=' + carroId, { method: 'GET' })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Erro ao adicionar item ao carrinho.');
+                    }
+                })
+                .then(data => {
+                    document.getElementById('cart-count').innerText = data.quantidadeItensCarrinho;
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                });
+        }
+    </script>
+</body>
+</html>
