@@ -1,108 +1,132 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
-<head>
+  <head>
     <title>Produtos</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="estilos.css">
-</head>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="/css/editarProduto.css" />
+  </head>
 
-<body>
+  <body>
     <header class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <a class="navbar-brand" href="#">Farmácia</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin">Admin</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Produtos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/verCarrinho">Carrinho</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
-                    </li>
-                </ul>
-            </div>
+      <div class="container">
+        <a class="navbar-brand" href="#">Carros Inc</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/admin">Admin</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/">Produtos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/verCarrinho">Carrinho</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/login">Login</a>
+            </li>
+          </ul>
         </div>
+      </div>
     </header>
 
     <div class="container mt-4">
-        <h1 class="mt-4">Produtos</h1>
-        <div class="mb-3">
-            <a href="/cadastro" class="btn btn-success">Cadastrar Novo Produto</a>
-        </div>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Imagem</th>
-                    <th>Nome</th>
-                    <th>Descrição</th>
-                    <th>Estoque</th>
-                    <th>Preço</th>
-                    <th>Editar</th>
-                    <th>Deletar</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="produto : ${produtos}">
-                    <td><img th:src="@{${produto.imagemUri}}" alt="Imagem do produto" style="width: 100px;"></td>
-                    <td th:text="${produto.nome}"></td>
-                    <td th:text="${produto.descricao}"></td>
-                    <td th:text="${produto.estoque}"></td>
-                    <td th:text="${produto.preco}"></td>
-                    <td>
-                        <a th:href="@{/editar(id=${produto.id})}" class="btn btn-warning">Editar</a>
-                    </td>
-                    <td>
-                        <button class="btn btn-danger" onclick="deleteProduct('${produto.id}')">Deletar</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+      <h1 class="mt-4">Produtos</h1>
+      <div class="mb-3">
+        <a href="/cadastro" class="btn btn-success">Cadastrar Novo Produto</a>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Imagem</th>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Preço</th>
+            <th>Marca</th>
+            <th>Ano</th>
+            <th>Modelo</th>
+            <th>Estoque</th>
+            <th>Editar</th>
+            <th>Deletar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="produto : ${produtos}">
+            <td>
+              <img
+                th:src="@{${produto.imagemUri}}"
+                alt="Imagem do produto"
+                style="width: 100px"
+              />
+            </td>
+            <td th:text="${produto.nome}"></td>
+            <td th:text="${produto.descricao}"></td>
+            <td th:text="${produto.preco}"></td>
+            <td th:text="${produto.marca}"></td>
+            <td th:text="${produto.ano}"></td>
+            <td th:text="${produto.modelo}"></td>
+            <td th:text="${produto.estoque}"></td>
+            <td>
+              <a th:href="@{/editar(id=${produto.id})}" class="btn btn-warning"
+                >Editar</a
+              >
+            </td>
+            <td>
+              <a th:href="@{/deletar(id=${produto.id})}" class="btn btn-warning"
+                >Deletar</a
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <!-- Footer -->
     <footer class="footer bg-light py-3">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <p class="text-muted mb-0">© 2024 Carros. Todos os direitos reservados.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <a href="#" class="text-muted me-3">Política de Privacidade</a>
-                    <a href="#" class="text-muted">Termos de Serviço</a>
-                </div>
-            </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <p class="text-muted mb-0">
+              © 2024 Carros. Todos os direitos reservados.
+            </p>
+          </div>
+          <div class="col-md-6 text-md-end"></div>
         </div>
+      </div>
     </footer>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script>
-        function deleteProduct(id) {
-            fetch(`/deletar?id=${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    location.reload(); // Recarrega a página após a deleção
-                } else {
-                    alert('Erro ao deletar o produto.');
-                }
-            });
-        }
+      function deletarProduto(id) {
+        const url = `/deletar?id=${encodeURIComponent(id)}`;
+        fetch(url, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }).then((response) => {
+          if (response.ok) {
+            location.reload(); // Reload the page after deletion
+          } else {
+            alert("Erro ao deletar o produto.");
+          }
+        });
+      }
     </script>
-</body>
-
+  </body>
 </html>

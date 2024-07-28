@@ -6,59 +6,52 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class ProdutoService {
 
+    private final ProdutoRepository produtoRepository;
+
     @Autowired
-    private ProdutoRepository produtoRepository;
+    public ProdutoService(ProdutoRepository produtoRepository) {
+        this.produtoRepository = produtoRepository;
+    }
 
     public List<Produto> findAllNotDeleted() {
-        return produtoRepository.findByIsDeletedNull();
+        return produtoRepository.findNotDeleted();
     }
 
-    // Método para encontrar um produto pelo ID
     public Produto findById(Long id) {
-        return produtoRepository.findById(id).orElse(null);
+        return produtoRepository.findById(id).orElseThrow(() -> new RuntimeException("Produto não encontrado"));
     }
 
-    // Método para deletar um produto logicamente
-    public void deletarProduto(Long id) {
-        Produto produto = findById(id);
-        if (produto != null) {
-            produto.setIsDeleted(LocalDateTime.now()); // Define a data e hora atuais para soft-delete
-            produtoRepository.save(produto);
-        }
+    public void softDelete(Long id) {
+        Produto produto = produtoRepository.findById(id).orElseThrow();
+        produto.setIsDeleted(LocalDateTime.now());
+        produtoRepository.save(produto);
     }
 
     public Produto save(Produto produto) {
         if (produto.getImagemUri() == null || produto.getImagemUri().isEmpty()) {
-            produto.setImagemUri("default-image-uri"); // Defina um valor padrão adequado
+            produto.setImagemUri("default-image-uri");
         }
         return produtoRepository.save(produto);
     }
 
     public void update(Produto produto) {
-        if (produtoRepository.existsById(produto.getId())) {
-            produtoRepository.save(produto); // Atualiza o produto
-        }
+        produtoRepository.save(produto);
     }
 
     public List<Produto> findAll() {
         return produtoRepository.findAll();
     }
 
-    // Método para encontrar produtos por categoria (modelo)
     public List<Produto> findByCategoria(String categoria) {
-        return produtoRepository.findAll().stream()
-                .filter(produto -> produto.getModelo().equalsIgnoreCase(categoria))
-                .collect(Collectors.toList());
+        return produtoRepository.findByModelo(categoria);
     }
 
-    // Método para obter todas as categorias (modelos) únicas
     public List<String> findAllCategorias() {
         return produtoRepository.findAll().stream()
                 .map(Produto::getModelo)

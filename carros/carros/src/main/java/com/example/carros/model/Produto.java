@@ -6,7 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
-
+import java.time.LocalDateTime; // Import LocalDateTime
+import java.time.ZoneId;
 import java.util.Date;
 
 @Entity
@@ -34,14 +35,14 @@ public class Produto {
     @Column(nullable = false)
     private String modelo;
 
-    @Column(nullable = false)
+    @Column(name = "imagem_uri")
     private String imagemUri;
 
     @Column(nullable = false)
-    private int estoque; // Novo campo para estoque
+    private int estoque;
 
-    @Column
-    private Date isDeleted;
+    @Column(name = "is_deleted")
+    private LocalDateTime isDeleted; // Alterado para LocalDateTime
 
     @PrePersist
     public void prePersist() {
@@ -53,8 +54,7 @@ public class Produto {
     public Produto() {
     }
 
-    public Produto(String nome, String descricao, double preco, String marca, int ano, String modelo, String imagemUri,
-            int estoque) {
+    public Produto(String nome, String descricao, double preco, String marca, int ano, String modelo, String imagemUri, int estoque) {
         this.nome = nome;
         this.descricao = descricao;
         this.preco = preco;
@@ -139,11 +139,15 @@ public class Produto {
         this.estoque = estoque;
     }
 
-    public Date getIsDeleted() {
+    public LocalDateTime getIsDeleted() {
         return isDeleted;
     }
 
-    public void setIsDeleted(Date isDeleted) {
+    public void setIsDeleted(LocalDateTime isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted != null;
     }
 }

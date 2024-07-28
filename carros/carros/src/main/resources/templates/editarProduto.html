@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title th:text="${carro.id == null} ? 'Cadastro de Carro' : 'Editar Carro'">Carro</title>
+    <title th:text="${produto.id == null} ? 'Cadastro de Carro' : 'Editar Carro'">Carro</title>
     <link rel="stylesheet" href="path/to/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
     <link rel="stylesheet" href="path/to/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" />
-    <link rel="stylesheet" href="path/to/style.css" th:href="@{/css/style.css}" />
+    <link rel="stylesheet" href="path/to/editarProduto.css" th:href="@{/css/editarProduto.css}" />
 </head>
 <body>
     <div th:replace="fragments/header :: header"></div>
     <main>
         <div class="container">
-            <h1 th:text="${carro.id == null} ? 'Cadastro de Carro' : 'Editar Carro'"></h1>
-            <form th:action="@{/atualizarProduto}" th:object="${carro}" method="post" enctype="multipart/form-data">
+            <h1 th:text="${produto.id == null} ? 'Cadastro de Carro' : 'Editar Produto'"></h1>
+            <form th:action="@{/atualizarProduto}" th:object="${produto}" method="post" enctype="multipart/form-data">
                 <input type="hidden" th:field="*{id}" />
                 <!-- Campo oculto para ID -->
                 <div class="form-group">

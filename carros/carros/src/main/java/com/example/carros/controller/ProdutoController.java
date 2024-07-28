@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -95,7 +96,7 @@ public class ProdutoController {
     public String editarProduto(@RequestParam("id") Long id, Model model) {
         Produto produto = produtoService.findById(id);
         if (produto != null) {
-            model.addAttribute("produto", produto); // Use "produto" here to match the template
+            model.addAttribute("produto", produto);
             return "editarProduto";
         } else {
             return "redirect:/error";
@@ -103,7 +104,8 @@ public class ProdutoController {
     }
 
     @PostMapping("/atualizarProduto")
-    public String atualizarProduto(@Valid Produto produto, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String atualizarProduto(@Valid Produto produto, BindingResult result,
+                                   RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "editarProduto";
         }
@@ -113,10 +115,22 @@ public class ProdutoController {
     }
 
     @GetMapping("/deletar")
-    public String deletarProduto(@RequestParam("id") Long id) {
-        produtoService.deletarProduto(id);
-        return "redirect:/index";
+    public RedirectView deletarProduto(@RequestParam("id") Long id, RedirectAttributes redirectAttributes) {
+        try {
+            Produto produto = produtoService.findById(id);
+            if (produto != null) {
+                produto.setIsDeleted(LocalDateTime.now()); // soft delete
+                produtoService.update(produto);
+                redirectAttributes.addFlashAttribute("message", "Produto removido com sucesso!");
+            } else {
+                redirectAttributes.addFlashAttribute("message", "Produto não encontrado");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Erro ao remover produto");
+        }
+        return new RedirectView("/index");
     }
+    
 
     @GetMapping("/cadastro")
     public String cadastro(Model model) {
@@ -131,7 +145,7 @@ public class ProdutoController {
         }
 
         if (produto.getImagemUri() == null || produto.getImagemUri().isEmpty()) {
-            produto.setImagemUri("default-image-uri"); // Define um valor padrão adequado
+            produto.setImagemUri("");
         }
 
         produtoService.save(produto);
@@ -206,13 +220,19 @@ public class ProdutoController {
     }
 
     @GetMapping("/{id}")
-    public String getProduto(@PathVariable Long id, Model model) {
-        Produto produto = produtoService.findById(id);
-        if (produto == null) {
-            model.addAttribute("error", "Produto não encontrado");
+    public String getProduto(@PathVariable String id, Model model) {
+        try {
+            Long productId = Long.parseLong(id);
+            Produto produto = produtoService.findById(productId);
+            if (produto == null) {
+                model.addAttribute("error", "Produto não encontrado");
+                return "error";
+            }
+            model.addAttribute("produto", produto);
+            return "produto";
+        } catch (NumberFormatException e) {
+            model.addAttribute("error", "ID inválido");
             return "error";
         }
-        model.addAttribute("produto", produto);
-        return "produto";
     }
 }
